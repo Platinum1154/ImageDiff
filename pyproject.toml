@@ -10,6 +10,7 @@ requires-python = ">=3.10"
 dependencies = [
     "openai>=2.11.0",
     "python-dotenv>=1.2.1",
+    "opencv-python>=4.5.3.56",  # 添加opencv-python依赖
 ]
 
 [project.scripts]
