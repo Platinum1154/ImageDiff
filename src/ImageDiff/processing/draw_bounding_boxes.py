@@ -37,7 +37,9 @@ def draw_bounding_boxes(
     # 解码成OpenCV图像格式
     image_a = cv2.imdecode(image_array_a, cv2.IMREAD_COLOR)
     image_b = cv2.imdecode(image_array_b, cv2.IMREAD_COLOR)
-
+    if image_a is None or image_b is None:
+        print("Failed to load one of the images.")
+        return None
 
     for idx, diff in enumerate(iterable=boxes.get("diffs", [])):
         x, y, w, h = diff["box"]
@@ -47,6 +49,7 @@ def draw_bounding_boxes(
         pt1 = (x, y)
         pt2 = (x + w, y + h)
 
+        
         # image_a
         cv2.rectangle(image_a, pt1, pt2, (0,255,0), 2)
 
@@ -64,6 +67,7 @@ def draw_bounding_boxes(
             1,
             cv2.LINE_AA
         )
+
     cv2.imshow("Image A with Bounding Boxes", image_a)
     cv2.imshow("Image B with Bounding Boxes", image_b)
     cv2.waitKey(0)

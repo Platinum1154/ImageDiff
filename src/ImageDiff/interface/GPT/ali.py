@@ -69,10 +69,10 @@ def ask_vl_model(
             print(chunk.usage)
         else:
             delta = chunk.choices[0].delta
-            # 打印思考过程
-            if hasattr(delta, 'reasoning_content') and delta.reasoning_content != None:
-                print(delta.reasoning_content, end='', flush=True)
-                reasoning_content += delta.reasoning_content
+            reasoning = getattr(delta, "reasoning_content", None)
+            if reasoning:
+                print(reasoning)
+
             else:
                 # 开始回复
                 if delta.content != "" and is_answering is False:
@@ -80,7 +80,9 @@ def ask_vl_model(
                     is_answering = True
                 # 打印回复过程
                 print(delta.content, end='', flush=True)
-                answer_content += delta.content
+                content = getattr(delta, "content", None)
+                if content:
+                    answer_content += content
     return {
         "answer": answer_content,
         "reasoning": reasoning_content,

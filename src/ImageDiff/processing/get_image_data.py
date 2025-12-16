@@ -13,7 +13,9 @@ def get_image_pixel(img_url : str) -> dict:
 
     # 解码成OpenCV图像格式
     img = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-
+    if img is None:
+        print("Failed to load image.")
+        return {}
     h, w = img.shape[:2]
     print("宽度:", w)
     print("高度:", h)
