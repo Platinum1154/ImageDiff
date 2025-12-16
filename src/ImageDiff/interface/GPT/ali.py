@@ -23,7 +23,6 @@ def ask_vl_model(
     reasoning_content = ""  # 定义完整思考过程
     answer_content = ""     # 定义完整回复
     is_answering = False   # 判断是否结束思考过程并开始回复
-    enable_thinking = False
     # 创建聊天完成请求
     completion = client.chat.completions.create(
         model="qwen3-vl-flash",
@@ -50,7 +49,7 @@ def ask_vl_model(
         stream=True,
         # enable_thinking 参数开启思考过程，thinking_budget 参数设置最大推理过程 Token 数
         extra_body={
-            'enable_thinking': True,
+            'enable_thinking': enable_thinking,
             "thinking_budget": 81920},
 
         # 解除以下注释会在最后一个chunk返回Token使用量
@@ -71,7 +70,7 @@ def ask_vl_model(
             delta = chunk.choices[0].delta
             reasoning = getattr(delta, "reasoning_content", None)
             if reasoning:
-                print(reasoning)
+                print(reasoning, end='', flush=True)
 
             else:
                 # 开始回复

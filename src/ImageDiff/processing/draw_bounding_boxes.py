@@ -41,8 +41,20 @@ def draw_bounding_boxes(
         print("Failed to load one of the images.")
         return None
 
+    # 获取图像尺寸用于反归一化
+    height_a, width_a = image_a.shape[:2]
+    height_b, width_b = image_b.shape[:2]
+
     for idx, diff in enumerate(iterable=boxes.get("diffs", [])):
-        x, y, w, h = diff["box"]
+        # 假设输入坐标是归一化到0-1000范围的
+        norm_x, norm_y, norm_w, norm_h = diff["box"]
+        
+        # 转换为实际像素坐标
+        x = int(norm_x * width_a / 1000)
+        y = int(norm_y * height_a / 1000)
+        w = int(norm_w * width_a / 1000)
+        h = int(norm_h * height_a / 1000)
+
         confidence = diff.get("conf", 0)
 
         # 左上角和右下角坐标
