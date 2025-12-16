@@ -27,24 +27,45 @@ def draw_bounding_boxes(
 
 
     # 使用requests库下载图片
-    response = requests.get(image_a_url)
+    response_a = requests.get(image_a_url)
+    response_b = requests.get(image_b_url)
 
     # 将下载的内容转换为numpy数组
-    image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
+    image_array_a = np.asarray(bytearray(response_a.content), dtype=np.uint8)
+    image_array_b = np.asarray(bytearray(response_b.content), dtype=np.uint8)
 
     # 解码成OpenCV图像格式
-    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-
-    # 检查图像是否成功读取
-    if image is not None:
-        # 显示图片
-        cv2.imshow("Downloaded Image", image)
-
-        # 等待按键，退出显示窗口
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-    else:
-        print("Failed to load image.")
+    image_a = cv2.imdecode(image_array_a, cv2.IMREAD_COLOR)
+    image_b = cv2.imdecode(image_array_b, cv2.IMREAD_COLOR)
 
 
+    for idx, diff in enumerate(iterable=boxes.get("diffs", [])):
+        x, y, w, h = diff["box"]
+        confidence = diff.get("conf", 0)
 
+        # 左上角和右下角坐标
+        pt1 = (x, y)
+        pt2 = (x + w, y + h)
+
+        # image_a
+        cv2.rectangle(image_a, pt1, pt2, (0,255,0), 2)
+
+        # 显示文字
+        label = f"diff {idx+1}: {confidence:.2f}"
+        text_pos = (x, y - 10 if y - 10 > 10 else y + 20)
+
+        cv2.putText(
+            image_a,
+            label,
+            text_pos,
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0,255,0),
+            1,
+            cv2.LINE_AA
+        )
+    cv2.imshow("Image A with Bounding Boxes", image_a)
+    cv2.imshow("Image B with Bounding Boxes", image_b)
+    cv2.waitKey(0)
+
+    return image_a
