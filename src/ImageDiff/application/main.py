@@ -47,7 +47,7 @@ def main() -> None:
             "diffs": []
             }'''
             ,
-        enable_thinking=True
+        enable_thinking=False
     )
     print("\n\n思考过程：")
     print(result["reasoning"])
